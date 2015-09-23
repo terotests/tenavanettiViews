@@ -826,7 +826,7 @@ return {
 
 ### <a name="serverAjaxEmu_ilmoitustaulu"></a>serverAjaxEmu::ilmoitustaulu(t)
 
-
+Muodosta näkymä, jossa on käyttäjälle tarkoitetun ilmoitustaulun sisältö
 ```javascript
 
 return {
@@ -893,17 +893,26 @@ if(this.userid) {
     }     
 }
 
-if(data.un=="my") {
+if(data.un=="ope") {
     this.userid = 100;
+    this.role = "opettaja";
     return {
        userid : 100,
        success : true
     }      
-} else {
+} 
+if(data.un=="vanh") {
+    this.userid = 101;
+    this.role = "vanhempi";
     return {
-       success : false
-    }         
-}
+       userid : 101,
+       success : true
+    }      
+} 
+
+return {
+   success : false
+}     
 ```
 
 ### <a name="serverAjaxEmu_logout"></a>serverAjaxEmu::logout(t)

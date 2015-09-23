@@ -555,6 +555,7 @@
       };
 
       /**
+       * Muodosta näkymä, jossa on käyttäjälle tarkoitetun ilmoitustaulun sisältö
        * @param float t
        */
       _myTrait_.ilmoitustaulu = function (t) {
@@ -613,17 +614,26 @@
           };
         }
 
-        if (data.un == "my") {
+        if (data.un == "ope") {
           this.userid = 100;
+          this.role = "opettaja";
           return {
             userid: 100,
             success: true
           };
-        } else {
+        }
+        if (data.un == "vanh") {
+          this.userid = 101;
+          this.role = "vanhempi";
           return {
-            success: false
+            userid: 101,
+            success: true
           };
         }
+
+        return {
+          success: false
+        };
       };
 
       /**
