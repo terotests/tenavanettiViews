@@ -34,6 +34,21 @@ content.model("ilmoitustaulu").then(function(m) {
 
 ```
 
+# Lokalisaatio
+
+Lang moduulissa voidaan määritellä käännöksiä joillekin teksteille
+
+## _t
+
+```javascript
+// "You have $1 unread emails!"
+_t("uusia.viesteja", 10);
+
+// -> You have 10 unread emails!
+```
+
+
+
 
 # Testaus ja kehitystyö
 
