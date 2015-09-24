@@ -413,14 +413,6 @@
         gDiv.button().text("Peruuta valinnat").on("click", function () {
           gardenInfo.undoStep();
         });
-        gDiv.button().text("Peruuta valinnat2").on("click", function () {
-          debugger;
-          gardenInfo.undoStep();
-        });
-
-        gDiv.button().text("valmis").on("click", function () {
-          console.log(gardenInfo.toPlainData());
-        });
 
         leftRow.ul("list-group").tree(gardenInfo.gardens, function (item, level) {
           var o = _e("li");
@@ -478,6 +470,44 @@
           var e = _e("span");
           e.text(reader.name() + " (" + reader.gardenName() + ")");
           return e;
+        });
+
+        var selectDiv = o.div();
+
+        o.button().text("Muokkaa").on("click", function () {
+          var newDiv = _e();
+          o.model("gardenModel").then(function (m) {
+            var valinnat = m.model.localFork();
+            valinnat.forTree(function (item) {
+              readers.forEach(function (on) {
+                if (on.id() == item.id()) item.set("selected", true);
+              });
+            });
+            newDiv.button("btn btn-primary").text(_t("Tallenna")).on("click", function () {
+              valinnat.forTree(function (item) {
+                if (item.type() == "group") {
+                  if (item.get("selected")) {
+                    var is_there = false;
+                    readers.forEach(function (on) {
+                      if (on.id() == item.id()) is_there = true;
+                    });
+                    if (!is_there) readers.push({
+                      id: item.id(),
+                      name: item.name(),
+                      gardenName: item.parent().parent().name()
+                    });
+                  } else {
+                    readers.forEach(function (on) {
+                      if (on.id() == item.id()) on.remove();
+                    });
+                  }
+                }
+              });
+              newDiv.popView();
+            });
+            newDiv.mv(valinnat, "valitsePkJaRyhma");
+          });
+          o.pushView(newDiv);
         });
         return o;
       };
@@ -662,10 +692,12 @@
           gardens: [{
             id: _makeId(),
             name: "Agoran päiväkoti",
+            type: "garden",
             settings: {},
             groups: [{
               id: _makeId("group1"),
               name: "Pörriäiset",
+              type: "group",
               children: [{
                 id: _makeId("child8"),
                 name: "Esko Antero"
@@ -687,6 +719,7 @@
             groups: [{
               id: _makeId("group2"),
               name: "Herhiläiset",
+              type: "group",
               children: [{
                 id: _makeId("child7"),
                 name: "Esko Antero"
