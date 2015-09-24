@@ -181,6 +181,7 @@ serverAjaxEmu()._addHandler("login", function(data) {
 - [opettajaRyhmatLapset](README.md#testViewFactories_opettajaRyhmatLapset)
 - [testView](README.md#testViewFactories_testView)
 - [uusiIlmoitustauluviesti](README.md#testViewFactories_uusiIlmoitustauluviesti)
+- [valitsePkJaRyhma](README.md#testViewFactories_valitsePkJaRyhma)
 - [vanhempiEtusivu](README.md#testViewFactories_vanhempiEtusivu)
 - [vanhempiYlanavi](README.md#testViewFactories_vanhempiYlanavi)
 
@@ -643,6 +644,79 @@ o.on("mount", function() {
 });
 
 return o;
+```
+
+### <a name="testViewFactories_valitsePkJaRyhma"></a>testViewFactories::valitsePkJaRyhma(id)
+
+
+```javascript
+
+var gardenInfo = _data(id);
+
+var leftRow = _e();
+
+var gDiv = leftRow.div(),
+	didAll = false;
+
+gDiv.button().text("Valitse kaikki").on("click", function() {
+    var cnt = 0, total = 0;
+    gardenInfo.gardens.forEach( function(g) {
+        g.groups.forEach( function(g) {
+            if(g.get("selected")) cnt++;
+            total++;
+        });
+    });
+    if(cnt==0) didAll = false;
+	if( didAll ) {
+        gardenInfo.gardens.forEach( function(g) {
+            g.set("selected", false);
+            g.groups.forEach( function(g) {
+                g.set("selected", false);
+            });
+        })
+        didAll = false;
+	} else {
+        gardenInfo.gardens.forEach( function(g) {
+            g.set("selected", true);
+            g.groups.forEach( function(g) {
+                g.set("selected", true);
+            });            
+        })
+        didAll = true;	    
+	}
+});	
+gDiv.button().text("Peruuta valinnat").on("click", function() {
+    gardenInfo.undoStep();
+});
+gDiv.button().text("Peruuta valinnat2").on("click", function() {
+    debugger;
+    gardenInfo.undoStep();
+});
+
+gDiv.button().text("valmis").on("click", function() {
+    console.log(gardenInfo.toPlainData());
+});	
+
+leftRow.ul("list-group").tree( gardenInfo.gardens, function(item, level) {
+    var o = _e("li");
+    o.addClass("list-group-item");
+    if(!item.get("selected")) {
+        item.set("selected", false);
+    }
+    var inp = o.input({type:"checkbox"});
+    inp.bind(item,"selected");
+    o.span().text(" ");
+    var name = o.span("dragLabel").bind(item, "name");
+    
+    o.on("click", function() {
+        item.set("selected", !item.get("selected"));
+    });
+    this.subTree(item.groups, o.ul() );
+    return o;
+});
+
+
+return leftRow;
 ```
 
 ### <a name="testViewFactories_vanhempiEtusivu"></a>testViewFactories::vanhempiEtusivu(t)
