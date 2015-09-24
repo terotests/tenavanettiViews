@@ -378,7 +378,7 @@
         var gDiv = leftRow.div(),
             didAll = false;
 
-        gDiv.button().text("Valitse kaikki").on("click", function () {
+        gDiv.button("btn btn-default btn-sm").text("Valitse kaikki").on("click", function () {
           var cnt = 0,
               total = 0;
           gardenInfo.gardens.forEach(function (g) {
@@ -406,7 +406,7 @@
             didAll = true;
           }
         });
-        gDiv.button().text("Peruuta valinnat").on("click", function () {
+        gDiv.button("btn btn-default btn-sm").text("Peruuta valinnat").on("click", function () {
           gardenInfo.undoStep();
         });
 
@@ -481,9 +481,18 @@
           return e;
         });
 
+        if (readers.length() == 0) {
+          readerWarning.clear();
+          var ss = readerWarning.div("alert alert-warning");
+          ss.span("glyphicon glyphicon-warning-sign");
+          ss.span().text("Viestillä ei ole yhtään lukijoita!");
+        } else {
+          readerWarning.clear();
+        }
+
         var selectDiv = o.div();
 
-        o.button("btn btn-warning btn-sm").text(_t("Valitse kenellä viesti näkyy")).on("click", function () {
+        o.button("btn btn-default btn-sm").text("valitse kenellä näkyy").on("click", function () {
           var newDiv = _e();
           o.model("gardenModel").then(function (m) {
             var valinnat = m.model.localFork();
@@ -515,7 +524,7 @@
               });
               if (readers.length() == 0) {
                 readerWarning.clear();
-                var ss = readerWarning.span("alert alert-warning");
+                var ss = readerWarning.div("alert alert-warning");
                 ss.span("glyphicon glyphicon-warning-sign");
                 ss.span().text("Viestillä ei ole yhtään lukijoita!");
               } else {
