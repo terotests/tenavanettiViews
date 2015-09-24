@@ -290,17 +290,19 @@
             itemDiv.div("panel-heading").bind(item, "heading");
 
             var o = itemDiv.div("panel-body");
-
             o.p().bind(item, "text", true);
-
             var tools = o.div();
 
-            o.div().mv(item.whoCanRead, "viestinLukijat");
-            o.mvc(item.files, function (file) {
-              var o = _e();
-              o.div().text(file.tiedosto());
+            o.ul("list-group").mvc(item.files, function (file) {
+              var o = _e("li");
+              o.addClass("list-group-item");
+              o.button("btn btn-primary").span("glyphicon glyphicon-paperclip");
+              o.h4().bind(file, "tiedosto");
+              o.div().bind(file, "nimi");
               return o;
             });
+
+            o.div().mv(item.whoCanRead, "viestinLukijat");
 
             var foot = itemDiv.div("panel-footer");
             foot.button("btn btn-default").text("Muokkaa").on("click", function () {
@@ -471,6 +473,7 @@
         var readers = _data(id);
 
         var o = _e();
+
         var readerWarning = o.div();
         var readerInfo = o.div();
         readerInfo.mvc(readers, function (reader) {
@@ -924,7 +927,7 @@
             text: "Ilmoituksen sisältöteksti\n\n rivi 2\n rivi 3",
             files: [{
               id: _makeId(),
-              nimi: "Testipäiväkoti",
+              nimi: "Ilmoitus vanhenpainillan ohjelmasta",
               tiedosto: "ilmoitus.pdf"
             }],
             linkit: [{
@@ -945,11 +948,7 @@
             id: _makeId(),
             heading: "Toinen ilmoitustauluviesti",
             text: "Ilmoitustauluviestin sisältöteksti\n\n rivi 2\n rivi 3",
-            files: [{
-              id: _makeId(),
-              nimi: "Testipäiväkoti",
-              tiedosto: "ilmoitus2.pdf"
-            }],
+            files: [],
             linkit: [],
             whoCanRead: [{
               id: _makeId("group1"),
