@@ -291,7 +291,7 @@
               o.pushTo("container", "muokkaaIlmoitusta", item);
             });
             tools.button("btn btn-default").text("Poista").on("click", function () {
-              item.remove();
+              if (confirm(_t("Poistetaanko viesti?"))) item.remove();
             });
             o.div().mv(item.whoCanRead, "viestinLukijat");
             /*
