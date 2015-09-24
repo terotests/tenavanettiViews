@@ -498,6 +498,8 @@
           set_reader_status();
         });
 
+        set_reader_status();
+
         var selectDiv = o.div();
 
         o.button("btn btn-default btn-sm").text("valitse kenellä näkyy").on("click", function () {
