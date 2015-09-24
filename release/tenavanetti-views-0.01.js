@@ -416,15 +416,25 @@
           if (!item.get("selected")) {
             item.set("selected", false);
           }
-          var inp = o.input({
-            type: "checkbox"
-          });
-          inp.bind(item, "selected");
+          if (level > 1) {
+            var inp = o.input({
+              type: "checkbox"
+            });
+            inp.bind(item, "selected");
+          }
           o.span().text(" ");
           var name = o.span("dragLabel").bind(item, "name");
 
+          var bAll = true;
           o.on("click", function () {
-            item.set("selected", !item.get("selected"));
+            if (level > 1) {
+              item.set("selected", !item.get("selected"));
+            } else {
+              item.groups.forEach(function (g) {
+                g.set("selected", bAll);
+              });
+              bAll = !bAll;
+            }
           });
           this.subTree(item.groups, o.ul());
           return o;
