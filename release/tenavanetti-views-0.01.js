@@ -200,9 +200,10 @@
         });
 
         o.div().text("Muokataan ilmoitustauluviestiä");
+        var item = _data(id);
         o.div().mv(item.whoCanRead, "viestinLukijat");
         var editArea = o.div();
-        var item = _data(id);
+
         item.then(function () {
           editArea.label().text(_t("Otsikko"));
           editArea.input("form-control").bind(item, "heading");
