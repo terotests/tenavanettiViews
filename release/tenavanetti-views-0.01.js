@@ -201,11 +201,16 @@
 
         o.div().text("Muokataan ilmoitustauluviestiä");
 
+        var editArea = o.div();
         var item = _data(id);
         item.then(function () {
-          o.input("form-control").bind(item, "heading");
-          o.textarea("form-control").bind(item, "text").height(300);
+          editArea.label().text(_t("Otsikko"));
+          editArea.input("form-control").bind(item, "heading");
+          editArea.label().text(_t("Sisältö"));
+          editArea.textarea("form-control").bind(item, "text").height(300);
         });
+
+        o.div().mv(item.whoCanRead, "viestinLukijat");
 
         return o;
       };
@@ -475,6 +480,7 @@
                 if (on.id() == item.id()) item.set("selected", true);
               });
             });
+            newDiv.mv(valinnat, "valitsePkJaRyhma");
             newDiv.button("btn btn-primary").text(_t("Tallenna")).on("click", function () {
               valinnat.forTree(function (item) {
                 if (item.type() == "group") {
@@ -497,7 +503,6 @@
               });
               newDiv.popView();
             });
-            newDiv.mv(valinnat, "valitsePkJaRyhma");
           });
           o.pushView(newDiv);
         });
