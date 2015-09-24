@@ -472,7 +472,9 @@
         var readers = _data(id);
 
         var o = _e();
-        o.div().mvc(readers, function (reader) {
+        var readerWarning = o.div();
+        var readerInfo = o.div();
+        readerInfo.mvc(readers, function (reader) {
           var e = _e("span");
           e.span("glyphicon glyphicon-user");
           e.span().text(reader.name() + " (" + reader.gardenName() + ")");
@@ -511,6 +513,14 @@
                   }
                 }
               });
+              if (readers.length() == 0) {
+                readerWarning.clear();
+                var ss = readerWarning.span("alert alert-warning");
+                ss.span("glyphicon glyphicon-warning-sign");
+                ss.span().text("Viestillä ei ole yhtään lukijoita!");
+              } else {
+                readerWarning.clear();
+              }
               newDiv.popView();
             });
           });
