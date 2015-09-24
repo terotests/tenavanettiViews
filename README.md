@@ -4,7 +4,7 @@ Käyttöliittymän näkymät testaus- ja tuotantokäyttöön.
 
 # Yksinkertaisia demoja
 
-http://codepen.io/teroktolonen/pen/bVwgWQ
+http://codepen.io/teroktolonen/full/bVwgWQ
 
 # Perusnäkymien alustaminen
 
@@ -180,10 +180,12 @@ serverAjaxEmu()._addHandler("login", function(data) {
 - [oletusYlanavi](README.md#testViewFactories_oletusYlanavi)
 - [opettajaRyhmatLapset](README.md#testViewFactories_opettajaRyhmatLapset)
 - [testView](README.md#testViewFactories_testView)
+- [tsIlmoitustaulu](README.md#testViewFactories_tsIlmoitustaulu)
 - [uusiIlmoitustauluviesti](README.md#testViewFactories_uusiIlmoitustauluviesti)
 - [valitsePkJaRyhma](README.md#testViewFactories_valitsePkJaRyhma)
 - [vanhempiEtusivu](README.md#testViewFactories_vanhempiEtusivu)
 - [vanhempiYlanavi](README.md#testViewFactories_vanhempiYlanavi)
+- [viestinLukijat](README.md#testViewFactories_viestinLukijat)
 
 
 
@@ -228,6 +230,7 @@ serverAjaxEmu()._addHandler("login", function(data) {
 - [login](README.md#serverAjaxEmu_login)
 - [logout](README.md#serverAjaxEmu_logout)
 - [test](README.md#serverAjaxEmu_test)
+- [tsIlmoitustaulu](README.md#serverAjaxEmu_tsIlmoitustaulu)
 
 
 
@@ -534,12 +537,18 @@ o.button("btn btn-default").text("<- palaa takaisin").on("click", function() {
 });
 
 o.div().text("Muokataan ilmoitustauluviestiä");
-
 var item = _data(id);
+o.div().mv(item.whoCanRead, "viestinLukijat");
+var editArea = o.div();
+
 item.then( function() {
-     o.input("form-control").bind(item, "heading");
-     o.textarea("form-control").bind(item, "text").height(300);
+     editArea.label().text(_t("Otsikko"));
+     editArea.input("form-control").bind(item, "heading");
+     editArea.label().text(_t("Sisältö"));
+     editArea.textarea("form-control").bind(item, "text").height(300);
 });
+
+
 
 return o;
 ```
@@ -596,6 +605,58 @@ return o;
 
 ```
 
+### <a name="testViewFactories_tsIlmoitustaulu"></a>testViewFactories::tsIlmoitustaulu(id)
+
+
+```javascript
+
+// content.pushTo("container", "ilmoitustaulu", m);
+
+var o = _e().addClass("container");
+
+o.h1().text("Ilmoitustaulu - toimistosihteeri");
+
+var mData = _data(id);
+mData.then( function() {
+    
+    o.button("btn btn-success").text("+ uusi viesti").on("click", function() {
+        // uusiIlmoitustauluviesti
+        o.pushTo("container", "uusiIlmoitustauluviesti", mData);
+    });
+
+    o.div().mvc( mData.list, function(item) {
+         var itemDiv = _e();
+         itemDiv.addClass("panel panel-default");
+         itemDiv.div("panel-heading").bind(item, "heading");
+
+         var o = itemDiv.div("panel-body");
+         o.p().bind(item, "text", true);
+         var tools = o.div();
+         
+         o.ul("list-group").mvc(item.files, function(file) {
+            var o = _e("li");
+            o.addClass("list-group-item");
+            o.button("btn btn-primary").span("glyphicon glyphicon-paperclip");
+            o.h4().bind(file,"tiedosto");
+            o.div().bind(file,"nimi");
+            return o;
+         });
+         
+         o.div().mv(item.whoCanRead, "viestinLukijat");
+         
+         var foot = itemDiv.div("panel-footer");
+         foot.button("btn btn-default").text("Muokkaa").on("click", function() {
+             o.pushTo("container", "muokkaaIlmoitusta", item);
+         })
+         foot.button("btn btn-default").text("Poista").on("click", function() {
+             if(confirm(_t("Poistetaanko viesti?"))) item.remove();
+         })         
+         return itemDiv;
+    });
+});
+return o;
+```
+
 ### <a name="testViewFactories_uusiIlmoitustauluviesti"></a>testViewFactories::uusiIlmoitustauluviesti(id)
 
 
@@ -613,7 +674,8 @@ var messages = o.div();
 var item = _data({
             id : ("new_item_"+ _uuid()),
             heading : "",
-            text : ""
+            text : "",
+            whoCanRead : []
         });
 var ilmModel = _data(id);        
 item.then( function() {
@@ -658,7 +720,7 @@ var leftRow = _e();
 var gDiv = leftRow.div(),
 	didAll = false;
 
-gDiv.button().text("Valitse kaikki").on("click", function() {
+gDiv.button("btn btn-default btn-sm").text("Valitse kaikki").on("click", function() {
     var cnt = 0, total = 0;
     gardenInfo.gardens.forEach( function(g) {
         g.groups.forEach( function(g) {
@@ -685,31 +747,33 @@ gDiv.button().text("Valitse kaikki").on("click", function() {
         didAll = true;	    
 	}
 });	
-gDiv.button().text("Peruuta valinnat").on("click", function() {
-    gardenInfo.undoStep();
-});
-gDiv.button().text("Peruuta valinnat2").on("click", function() {
-    debugger;
+gDiv.button("btn btn-default btn-sm").text("Peruuta valinnat").on("click", function() {
     gardenInfo.undoStep();
 });
 
-gDiv.button().text("valmis").on("click", function() {
-    console.log(gardenInfo.toPlainData());
-});	
-
-leftRow.ul("list-group").tree( gardenInfo.gardens, function(item, level) {
+leftRow.ul("nav nav-pills").tree( gardenInfo.gardens, function(item, level) {
     var o = _e("li");
     o.addClass("list-group-item");
     if(!item.get("selected")) {
         item.set("selected", false);
     }
-    var inp = o.input({type:"checkbox"});
-    inp.bind(item,"selected");
+    if(level>1) {
+        var inp = o.input({type:"checkbox"});
+        inp.bind(item,"selected");
+    }
     o.span().text(" ");
     var name = o.span("dragLabel").bind(item, "name");
     
+    var bAll = true;
     o.on("click", function() {
-        item.set("selected", !item.get("selected"));
+        if(level>1) {
+            item.set("selected", !item.get("selected"));
+        } else {
+            item.groups.forEach( function(g) {
+                g.set("selected", bAll);
+            });
+            bAll = !bAll;
+        }
     });
     this.subTree(item.groups, o.ul() );
     return o;
@@ -742,6 +806,97 @@ o.button("btn btn-defaul").text(_t("logout")).on("click", function() {
 });
 
 return o;
+```
+
+### <a name="testViewFactories_viestinLukijat"></a>testViewFactories::viestinLukijat(id)
+
+
+```javascript
+var readers = _data(id);
+
+var o = _e();
+
+var readerWarning = o.div();
+var readerInfo = o.div();
+readerInfo.mvc(readers, function(reader) {
+    var e = _e("span");
+    e.span("glyphicon glyphicon-user");
+    e.span().text(reader.name()+" ("+reader.gardenName()+")");
+    return e;
+});
+
+var set_reader_status = function() {
+    if(readers.length()==0) {
+        readerWarning.clear();
+        var ss = readerWarning.div("alert alert-warning");
+        ss.span("glyphicon glyphicon-warning-sign");
+        ss.span().text("Viestillä ei ole yhtään lukijoita!");
+    } else {
+        readerWarning.clear();
+    }
+}
+
+readers.on("insert", function() {
+    set_reader_status();
+});
+readers.on("remove", function() {
+    set_reader_status();
+});
+
+set_reader_status();
+
+
+var selectDiv = o.div();
+
+o.button("btn btn-default btn-sm").text("valitse kenellä näkyy").on("click", function() {
+    var newDiv = _e();
+    o.model("gardenModel").then( function(m) {
+        var valinnat = m.model.localFork();
+        valinnat.forTree( function(item) {
+            readers.forEach( function(on) {
+                if(on.id() == item.id()) item.set("selected", true); 
+            });
+        });
+        newDiv.mv(valinnat, "valitsePkJaRyhma");
+        newDiv.button("btn btn-primary").text(_t("Tallenna")).on("click", function() {
+            valinnat.forTree( function(item) {
+                if(item.type()=="group") {
+                    if(item.get("selected")) {
+                        var is_there = false;
+                        readers.forEach( function(on) {
+                            if(on.id() == item.id()) is_there = true;
+                        });                  
+                        if(!is_there) readers.push({
+                            id : item.id(),
+                            name : item.name(),
+                            gardenName : item.parent().parent().name()
+                        });
+                    } else {
+                        readers.forEach( function(on) {
+                            if(on.id() == item.id()) on.remove();
+                        });                        
+                    }
+                }
+            });
+            if(readers.length()==0) {
+                readerWarning.clear();
+                var ss = readerWarning.div("alert alert-warning");
+                ss.span("glyphicon glyphicon-warning-sign");
+                ss.span().text("Viestillä ei ole yhtään lukijoita!");
+            } else {
+                readerWarning.clear();
+            }
+            newDiv.popView();
+        });
+        
+    });     
+    o.pushView(newDiv);
+})
+return o;
+
+
+
+
 ```
 
 
@@ -846,6 +1001,8 @@ The class has following internal singleton variables:
         
 * _handlers
         
+* _idCache
+        
         
 ### <a name="serverAjaxEmu__addHandler"></a>serverAjaxEmu::_addHandler(cmdName, handlerFn)
 
@@ -874,20 +1031,33 @@ return {
         {
             id : _makeId(),
             name : "Agoran päiväkoti",
+            type : "garden",
             settings : {
                 
             },
             groups : [
-                { id : _makeId(), name : "Pörriäiset",
+                { id : _makeId("group1"), name : "Pörriäiset",
+                    type : "group",
                     children : [
-                        {   id : _makeId(),  
+                        {   id : _makeId("child8"),  
                             name : "Esko Antero"
                         }, 
-                        { id : _makeId(),  name : "Alma Nikula"}, 
-                        { id : _makeId(),  name : "Juuso Nettinen"}, 
-                        { id : _makeId(),  name : "Pirjo Lahtinen"} 
+                        { id : _makeId("child1"),  name : "Alma Nikula"}, 
+                        { id : _makeId("child2"),  name : "Juuso Nettinen"}, 
+                        { id : _makeId("child3"),  name : "Pirjo Lahtinen"} 
                     ]
-                }
+                },
+                { id : _makeId("group3"), name : "Purhoset",
+                    type : "group",
+                    children : [
+                        {   id : _makeId("child18"),  
+                            name : "Asko Entero"
+                        }, 
+                        { id : _makeId("child11"),  name : "Nisse Nikula"}, 
+                        { id : _makeId("child12"),  name : "Jarmo Järvinen"}, 
+                        { id : _makeId("child13"),  name : "Pirkko Lahtinen"} 
+                    ]
+                }                
             ]
         },
         {
@@ -897,14 +1067,15 @@ return {
                 
             },
             groups : [
-                { id : _makeId(), name : "Herhiläiset",
+                { id : _makeId("group2"), name : "Herhiläiset",
+                    type : "group",
                     children : [
-                        {   id : _makeId(),  
+                        {   id : _makeId("child7"),  
                             name : "Esko Antero"
                         }, 
-                        { id : _makeId(),  name : "Armo Nikula"}, 
-                        { id : _makeId(),  name : "Jukka Mänttäri"}, 
-                        { id : _makeId(),  name : "Arttu Viskari"} 
+                        { id : _makeId("child4"),  name : "Armo Nikula"}, 
+                        { id : _makeId("child5"),  name : "Jukka Mänttäri"}, 
+                        { id : _makeId("child6"),  name : "Arttu Viskari"} 
                     ]
                 }
             ]
@@ -933,6 +1104,19 @@ return {
             ],
             linkit : [
                 {  
+                    id : _makeId(),
+                    url : "http://www.yle.fi",
+                    text : "Linkki YLE:n sivustolle tulee tähän kohtaan"
+                }
+            ],
+            readerList : [
+                {  
+                    id : _makeId("group1"),
+                    url : "http://www.yle.fi",
+                    text : "Linkki YLE:n sivustolle tulee tähän kohtaan"
+                },
+                {  
+                    id : _makeId("group2"),
                     url : "http://www.yle.fi",
                     text : "Linkki YLE:n sivustolle tulee tähän kohtaan"
                 }
@@ -960,13 +1144,20 @@ return {
 
 ```javascript
 if(!_uuid) {
+    _idCache = {};
     _uuid = function() {
         return Math.random().toString(36).substring(2, 15) +
                 Math.random().toString(36).substring(2, 15);
     }
-    _makeId = function() {
+    _makeId = function(name) {
         if(!_currentId) _currentId = 1;
-        return _currentId++;
+        if(name) {
+            if(_idCache[name]) return _idCache[name];
+            _idCache[name] = _currentId++;
+            return _idCache[name];
+        } else {
+            return _currentId++;
+        }
     }    
 }
 ```
@@ -1022,6 +1213,69 @@ return {
 return {
  text : "Hello form test function",
  success : true
+};
+```
+
+### <a name="serverAjaxEmu_tsIlmoitustaulu"></a>serverAjaxEmu::tsIlmoitustaulu(t)
+
+Toimistosihteerin ilmoitustaulun sisältö.
+```javascript
+
+return {
+    list : [
+        {
+            id : _makeId(),
+            heading : "Toimistosihteerin jättämä ilmoitus",
+            text : "Ilmoituksen sisältöteksti\n\n rivi 2\n rivi 3",
+            files : [
+                {
+                    id : _makeId(),
+                    nimi : "Ilmoitus vanhenpainillan ohjelmasta",
+                    tiedosto : "ilmoitus.pdf"
+                }
+            ],
+            linkit : [
+                {  
+                    id : _makeId(),
+                    url : "http://www.yle.fi",
+                    text : "Linkki YLE:n sivustolle tulee tähän kohtaan"
+                }
+            ],
+            whoCanRead : [
+                {  
+                    id : _makeId("group1"),
+                    name : "Pörriäiset",
+                    gardenName : "Agoran päiväkoti"
+                },
+                {  
+                    id : _makeId("group2"),
+                    name : "Herhiläiset",
+                    gardenName : "Kummilan kummikoti"
+                }
+            ]
+        },
+        {
+            id : _makeId(),
+            heading : "Toinen ilmoitustauluviesti",
+            text : "Ilmoitustauluviestin sisältöteksti\n\n rivi 2\n rivi 3",
+            files : [
+            ],
+            linkit : [],
+            whoCanRead : [
+                {  
+                    id : _makeId("group1"),
+                    name : "Pörriäiset",
+                    gardenName : "Agoran päiväkoti"
+                },
+                {  
+                    id : _makeId("group2"),
+                    name : "Herhiläiset",
+                    gardenName : "Kummilan kummikoti"
+                }
+            ]
+        } 
+    ]
+
 };
 ```
 
