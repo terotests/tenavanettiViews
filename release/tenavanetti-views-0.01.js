@@ -264,6 +264,66 @@
       /**
        * @param String id
        */
+      _myTrait_.tsIlmoitustaulu = function (id) {
+
+        // content.pushTo("container", "ilmoitustaulu", m);
+
+        var o = _e().addClass("container");
+
+        o.h1().text("Ilmoitustaulu - toimistosihteeri");
+
+        var mData = _data(id);
+        mData.then(function () {
+
+          o.button("btn btn-success").text("+ uusi viesti").on("click", function () {
+            // uusiIlmoitustauluviesti
+            o.pushTo("container", "uusiIlmoitustauluviesti", mData);
+          });
+
+          o.div().mvc(mData.list, function (item) {
+            var o = _e();
+
+            o.h2().bind(item, "heading");
+            o.p().bind(item, "text", true);
+
+            var tools = o.div();
+            tools.button("btn btn-default").text("Muokkaa").on("click", function () {
+              o.pushTo("container", "muokkaaIlmoitusta", item);
+            });
+            tools.button("btn btn-default").text("Poista").on("click", function () {
+              item.remove();
+            });
+            o.div().mv(item.whoCanRead, "viestinLukijat");
+            /*
+            o.div().mvc(item.whoCanRead, function(reader) {
+            var e = _e("span");
+            e.text(reader.name()+" ("+reader.gardenName()+")");
+            return e;
+            });
+            */
+            /*
+            setTimeout(
+             function() {
+                 o.div().text("Hello");
+                 o.div().mv(item.whoCanRead, "testView");
+             },1000);
+            */
+
+            o.mvc(item.files, function (file) {
+              var o = _e();
+              o.div().text(file.tiedosto());
+              return o;
+            });
+
+            return o;
+          });
+        });
+        return o;
+      };
+
+      /**
+       * @param String id
+       */
       _myTrait_.uusiIlmoitustauluviesti = function (id) {
         var o = _e().addClass("container");
 
@@ -404,6 +464,21 @@
 
         o.button("btn btn-defaul").text(_t("logout")).on("click", function () {});
 
+        return o;
+      };
+
+      /**
+       * @param float id
+       */
+      _myTrait_.viestinLukijat = function (id) {
+        var readers = _data(id);
+
+        var o = _e();
+        o.div().mvc(readers, function (reader) {
+          var e = _e("span");
+          e.text(reader.name() + " (" + reader.gardenName() + ")");
+          return e;
+        });
         return o;
       };
     })(this);
@@ -754,12 +829,12 @@
        * Toimistosihteerin ilmoitustaulun sisältö.
        * @param float t
        */
-      _myTrait_.tsImoitustaulu = function (t) {
+      _myTrait_.tsIlmoitustaulu = function (t) {
 
         return {
           list: [{
             id: _makeId(),
-            heading: "Ilmoituksen otsikko - from AJAX emulator",
+            heading: "Toimistosihteerin jättämä ilmoitus",
             text: "Ilmoituksen sisältöteksti\n\n rivi 2\n rivi 3",
             files: [{
               id: _makeId(),
