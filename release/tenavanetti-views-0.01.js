@@ -281,41 +281,31 @@
           });
 
           o.div().mvc(mData.list, function (item) {
-            var o = _e();
+            var itemDiv = _e();
+            itemDiv.addClass("panel panel-default");
+            itemDiv.div("panel-heading").bind(item, "heading");
 
-            o.h2().bind(item, "heading");
+            var o = itemDiv.div("panel-body");
+
             o.p().bind(item, "text", true);
 
             var tools = o.div();
-            tools.button("btn btn-default").text("Muokkaa").on("click", function () {
-              o.pushTo("container", "muokkaaIlmoitusta", item);
-            });
-            tools.button("btn btn-default").text("Poista").on("click", function () {
-              if (confirm(_t("Poistetaanko viesti?"))) item.remove();
-            });
-            o.div().mv(item.whoCanRead, "viestinLukijat");
-            /*
-            o.div().mvc(item.whoCanRead, function(reader) {
-            var e = _e("span");
-            e.text(reader.name()+" ("+reader.gardenName()+")");
-            return e;
-            });
-            */
-            /*
-            setTimeout(
-             function() {
-                 o.div().text("Hello");
-                 o.div().mv(item.whoCanRead, "testView");
-             },1000);
-            */
 
+            o.div().mv(item.whoCanRead, "viestinLukijat");
             o.mvc(item.files, function (file) {
               var o = _e();
               o.div().text(file.tiedosto());
               return o;
             });
 
-            return o;
+            var foot = itemDiv.div("panel-footer");
+            foot.button("btn btn-default").text("Muokkaa").on("click", function () {
+              o.pushTo("container", "muokkaaIlmoitusta", item);
+            });
+            foot.button("btn btn-default").text("Poista").on("click", function () {
+              if (confirm(_t("Poistetaanko viesti?"))) item.remove();
+            });
+            return itemDiv;
           });
         });
         return o;
