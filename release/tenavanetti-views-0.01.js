@@ -558,6 +558,7 @@
       var _currentId;
       var _makeId;
       var _handlers;
+      var _idCache;
 
       /**
        * @param String cmdName
@@ -588,19 +589,19 @@
             name: "Agoran päiväkoti",
             settings: {},
             groups: [{
-              id: _makeId(),
+              id: _makeId("group1"),
               name: "Pörriäiset",
               children: [{
-                id: _makeId(),
+                id: _makeId("child8"),
                 name: "Esko Antero"
               }, {
-                id: _makeId(),
+                id: _makeId("child1"),
                 name: "Alma Nikula"
               }, {
-                id: _makeId(),
+                id: _makeId("child2"),
                 name: "Juuso Nettinen"
               }, {
-                id: _makeId(),
+                id: _makeId("child3"),
                 name: "Pirjo Lahtinen"
               }]
             }]
@@ -609,19 +610,19 @@
             name: "Kummilan kummikoti",
             settings: {},
             groups: [{
-              id: _makeId(),
+              id: _makeId("group2"),
               name: "Herhiläiset",
               children: [{
-                id: _makeId(),
+                id: _makeId("child7"),
                 name: "Esko Antero"
               }, {
-                id: _makeId(),
+                id: _makeId("child4"),
                 name: "Armo Nikula"
               }, {
-                id: _makeId(),
+                id: _makeId("child5"),
                 name: "Jukka Mänttäri"
               }, {
-                id: _makeId(),
+                id: _makeId("child6"),
                 name: "Arttu Viskari"
               }]
             }]
@@ -646,6 +647,16 @@
               tiedosto: "ilmoitus.pdf"
             }],
             linkit: [{
+              id: _makeId(),
+              url: "http://www.yle.fi",
+              text: "Linkki YLE:n sivustolle tulee tähän kohtaan"
+            }],
+            readerList: [{
+              id: _makeId("group1"),
+              url: "http://www.yle.fi",
+              text: "Linkki YLE:n sivustolle tulee tähän kohtaan"
+            }, {
+              id: _makeId("group2"),
               url: "http://www.yle.fi",
               text: "Linkki YLE:n sivustolle tulee tähän kohtaan"
             }]
@@ -668,12 +679,19 @@
       if (!_myTrait_.__traitInit) _myTrait_.__traitInit = [];
       _myTrait_.__traitInit.push(function (options) {
         if (!_uuid) {
+          _idCache = {};
           _uuid = function () {
             return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
           };
-          _makeId = function () {
+          _makeId = function (name) {
             if (!_currentId) _currentId = 1;
-            return _currentId++;
+            if (name) {
+              if (_idCache[name]) return _idCache[name];
+              _idCache[name] = _currentId++;
+              return _idCache[name];
+            } else {
+              return _currentId++;
+            }
           };
         }
       });
@@ -729,6 +747,60 @@
         return {
           text: "Hello form test function",
           success: true
+        };
+      };
+
+      /**
+       * Toimistosihteerin ilmoitustaulun sisältö.
+       * @param float t
+       */
+      _myTrait_.tsImoitustaulu = function (t) {
+
+        return {
+          list: [{
+            id: _makeId(),
+            heading: "Ilmoituksen otsikko - from AJAX emulator",
+            text: "Ilmoituksen sisältöteksti\n\n rivi 2\n rivi 3",
+            files: [{
+              id: _makeId(),
+              nimi: "Testipäiväkoti",
+              tiedosto: "ilmoitus.pdf"
+            }],
+            linkit: [{
+              id: _makeId(),
+              url: "http://www.yle.fi",
+              text: "Linkki YLE:n sivustolle tulee tähän kohtaan"
+            }],
+            whoCanRead: [{
+              id: _makeId("group1"),
+              name: "Pörriäiset",
+              gardenName: "Agoran päiväkoti"
+            }, {
+              id: _makeId("group2"),
+              name: "Herhiläiset",
+              gardenName: "Kummilan kummikoti"
+            }]
+          }, {
+            id: _makeId(),
+            heading: "Toinen ilmoitustauluviesti",
+            text: "Ilmoitustauluviestin sisältöteksti\n\n rivi 2\n rivi 3",
+            files: [{
+              id: _makeId(),
+              nimi: "Testipäiväkoti",
+              tiedosto: "ilmoitus2.pdf"
+            }],
+            linkit: [],
+            whoCanRead: [{
+              id: _makeId("group1"),
+              name: "Pörriäiset",
+              gardenName: "Agoran päiväkoti"
+            }, {
+              id: _makeId("group2"),
+              name: "Herhiläiset",
+              gardenName: "Kummilan kummikoti"
+            }]
+          }]
+
         };
       };
     })(this);
