@@ -474,7 +474,7 @@
 
         var selectDiv = o.div();
 
-        o.button().text("Muokkaa").on("click", function () {
+        o.button("btn btn-warning btn-sm").text(_t("Valitse kenellä viesti näkyy")).on("click", function () {
           var newDiv = _e();
           o.model("gardenModel").then(function (m) {
             var valinnat = m.model.localFork();
