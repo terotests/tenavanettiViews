@@ -338,7 +338,8 @@
         var item = _data({
           id: "new_item_" + _uuid(),
           heading: "",
-          text: ""
+          text: "",
+          whoCanRead: []
         });
         var ilmModel = _data(id);
         item.then(function () {
@@ -414,7 +415,7 @@
           gardenInfo.undoStep();
         });
 
-        leftRow.ul("list-group").tree(gardenInfo.gardens, function (item, level) {
+        leftRow.ul("nav nav-pills").tree(gardenInfo.gardens, function (item, level) {
           var o = _e("li");
           o.addClass("list-group-item");
           if (!item.get("selected")) {
@@ -468,7 +469,8 @@
         var o = _e();
         o.div().mvc(readers, function (reader) {
           var e = _e("span");
-          e.text(reader.name() + " (" + reader.gardenName() + ")");
+          e.span("glyphicon glyphicon-user");
+          e.span().text(reader.name() + " (" + reader.gardenName() + ")");
           return e;
         });
 
@@ -710,6 +712,23 @@
               }, {
                 id: _makeId("child3"),
                 name: "Pirjo Lahtinen"
+              }]
+            }, {
+              id: _makeId("group3"),
+              name: "Purhoset",
+              type: "group",
+              children: [{
+                id: _makeId("child18"),
+                name: "Asko Entero"
+              }, {
+                id: _makeId("child11"),
+                name: "Nisse Nikula"
+              }, {
+                id: _makeId("child12"),
+                name: "Jarmo Järvinen"
+              }, {
+                id: _makeId("child13"),
+                name: "Pirkko Lahtinen"
               }]
             }]
           }, {
