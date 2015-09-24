@@ -200,7 +200,7 @@
         });
 
         o.div().text("Muokataan ilmoitustauluviestiä");
-
+        o.div().mv(item.whoCanRead, "viestinLukijat");
         var editArea = o.div();
         var item = _data(id);
         item.then(function () {
@@ -209,8 +209,6 @@
           editArea.label().text(_t("Sisältö"));
           editArea.textarea("form-control").bind(item, "text").height(300);
         });
-
-        o.div().mv(item.whoCanRead, "viestinLukijat");
 
         return o;
       };
