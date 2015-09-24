@@ -480,14 +480,23 @@
           return e;
         });
 
-        if (readers.length() == 0) {
-          readerWarning.clear();
-          var ss = readerWarning.div("alert alert-warning");
-          ss.span("glyphicon glyphicon-warning-sign");
-          ss.span().text("Viestillä ei ole yhtään lukijoita!");
-        } else {
-          readerWarning.clear();
-        }
+        var set_reader_status = function set_reader_status() {
+          if (readers.length() == 0) {
+            readerWarning.clear();
+            var ss = readerWarning.div("alert alert-warning");
+            ss.span("glyphicon glyphicon-warning-sign");
+            ss.span().text("Viestillä ei ole yhtään lukijoita!");
+          } else {
+            readerWarning.clear();
+          }
+        };
+
+        readers.on("insert", function () {
+          set_reader_status();
+        });
+        readers.on("remove", function () {
+          set_reader_status();
+        });
 
         var selectDiv = o.div();
 
