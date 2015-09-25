@@ -272,8 +272,14 @@
 
         var data = _data(id);
 
-        var msgDiv = o.div("alert alert-info");
+        var msgDiv = o.div("alert");
         msgDiv.text(data.text());
+
+        if (data.get("success")) {
+          msgDiv.addClass("alert-success");
+        } else {
+          msgDiv.addClass("alert-warning");
+        }
 
         setTimeout(function () {
           o.remove();
@@ -387,7 +393,13 @@
               o.pushTo("container", "muokkaaIlmoitusta", item);
             });
             foot.button("btn btn-default").text("Poista").on("click", function () {
-              if (confirm(_t("Poistetaanko viesti?"))) item.remove();
+              if (confirm(_t("Poistetaanko viesti?"))) {
+                item.remove();
+                o.pushTo("messages", "newMessage", _data({
+                  success: true,
+                  text: "Viesti poistettu"
+                }));
+              }
             });
             return itemDiv;
           });
@@ -806,7 +818,7 @@
        */
       _myTrait_.editNote = function (t) {
         return {
-          text: "Tallennus onnistui",
+          text: "Tallennus onnistui - viesti palvelimelta",
           success: true
         };
       };
