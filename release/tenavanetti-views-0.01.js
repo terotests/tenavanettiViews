@@ -1062,11 +1062,11 @@
               var on = "glyphicon glyphicon-check";
               var off = "glyphicon glyphicon-unchecked";
               if (v) {
-                this.removeClass(off);
-                this.addClass(on);
+                ch.removeClass(off);
+                ch.addClass(on);
               } else {
-                this.removeClass(on);
-                this.addClass(off);
+                ch.removeClass(on);
+                ch.addClass(off);
               }
             });
             this.add(ch);
