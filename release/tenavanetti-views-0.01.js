@@ -1049,6 +1049,7 @@
         _e().extendAll({
           tnCheckbox: function tnCheckbox(model, variableName) {
             var ch = _e("span");
+            ch.touchclick();
             ch._type = "checkbox";
             ch.addClass("glyphicon glyphicon-check");
             ch.bind(model, variableName, function (v) {

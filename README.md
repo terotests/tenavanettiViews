@@ -120,6 +120,8 @@ serverAjaxEmu()._addHandler("login", function(data) {
 #### Class tenavanettiViews
 
 
+- [createExtensions](README.md#tenavanettiViews_createExtensions)
+- [createStyles](README.md#tenavanettiViews_createStyles)
 
 
 
@@ -257,6 +259,44 @@ The class has following internal singleton variables:
 * ajaxEndpoint
         
         
+### <a name="tenavanettiViews_createExtensions"></a>tenavanettiViews::createExtensions(t)
+
+
+```javascript
+
+_e().extendAll({
+    tnCheckbox : function(model, variableName) {
+        var ch = _e("span");
+        ch.touchclick();
+        ch._type = "checkbox";
+        ch.addClass("glyphicon glyphicon-check");
+        ch.bind(model, variableName, function(v) {
+               var on = "glyphicon glyphicon-check";
+               var off="glyphicon glyphicon-unchecked";
+               if(v) {
+                  ch.removeClass(off);
+                  ch.addClass(on);
+               } else {
+                  ch.removeClass(on);
+                  ch.addClass(off);
+               }
+           });
+        
+        this.add(ch);
+        return ch;
+    }
+});
+```
+
+### <a name="tenavanettiViews_createStyles"></a>tenavanettiViews::createStyles(t)
+
+
+```javascript
+css().bind(".clickable", {
+    cursor : "pointer"
+});
+```
+
 ### tenavanettiViews::constructor( options )
 
 ```javascript
@@ -300,6 +340,8 @@ if(options.views_to) {
         });
        
     }
+    this.createExtensions();
+    this.createStyles();
 }
 ```
         
@@ -753,13 +795,13 @@ gDiv.button("btn btn-default btn-sm").text("Peruuta valinnat").on("click", funct
 
 leftRow.ul("nav nav-pills").tree( gardenInfo.gardens, function(item, level) {
     var o = _e("li");
+    o.addClass("clickable");
     o.addClass("list-group-item");
     if(!item.get("selected")) {
         item.set("selected", false);
     }
     if(level>1) {
-        var inp = o.input({type:"checkbox"});
-        inp.bind(item,"selected");
+        o.tnCheckbox( item, "selected");
     }
     o.span().text(" ");
     var name = o.span("dragLabel").bind(item, "name");
