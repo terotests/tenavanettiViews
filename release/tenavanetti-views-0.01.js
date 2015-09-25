@@ -1073,7 +1073,7 @@
        * @param float t
        */
       _myTrait_.createStyles = function (t) {
-        css().bind("clickable", {
+        css().bind(".clickable", {
           cursor: "pointer"
         });
       };
