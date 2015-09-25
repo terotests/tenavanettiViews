@@ -1056,7 +1056,7 @@
 
         _e().extendAll({
           tnCheckbox: function tnCheckbox(model, variableName) {
-            var ch = _e("checkbox");
+            var ch = _e("span");
             ch.addClass("glyphicon glyphicon-check");
             ch.bind(model, variableName, function (v) {
               var on = "glyphicon glyphicon-check";
