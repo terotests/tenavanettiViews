@@ -428,6 +428,7 @@
 
           var bAll = true;
           o.on("click", function () {
+            return;
             if (level > 1) {
               item.set("selected", !item.get("selected"));
             } else {
