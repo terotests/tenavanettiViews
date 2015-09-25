@@ -219,7 +219,7 @@
               }, function (resObj) {
                 if (resObj.success) {
                   if (resObj.text) {
-                    o.pushTo("messages", "newMessage", resObj.text);
+                    o.pushTo("messages", "newMessage", _data(resObj));
                   }
                   o.popView();
                 } else {
@@ -265,16 +265,18 @@
       };
 
       /**
-       * @param String msgText
+       * @param String id
        */
-      _myTrait_.newMessage = function (msgText) {
+      _myTrait_.newMessage = function (id) {
         var o = _e();
 
+        var data = _data(id);
+
         var msgDiv = o.div("alert alert-info");
-        msgDiv.text(msgText);
+        msgDiv.text(data.text());
 
         setTimeout(function () {
-          msgDiv.remove();
+          o.remove();
         }, 4000);
 
         return o;
