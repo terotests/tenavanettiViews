@@ -1117,6 +1117,7 @@
               }
             });
           }
+          this.createExtensions();
         }
       });
     })(this);
