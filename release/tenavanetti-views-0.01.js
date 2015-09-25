@@ -418,10 +418,10 @@
             item.set("selected", false);
           }
           if (level > 1) {
-            var inp = o.input({
-              type: "checkbox"
-            });
-            inp.bind(item, "selected");
+            //var inp = o.input({type:"checkbox"});
+            //inp.bind(item,"selected");
+
+            o.tnCheckbox(item, "selected");
 
             // glyphicon glyphicon-unchecked
             // glyphicon glyphicon-check
@@ -433,7 +433,6 @@
 
           var bAll = true;
           o.on("click", function () {
-            return;
             if (level > 1) {
               item.set("selected", !item.get("selected"));
             } else {
@@ -1057,6 +1056,7 @@
         _e().extendAll({
           tnCheckbox: function tnCheckbox(model, variableName) {
             var ch = _e("span");
+            ch._type = "checkbox";
             ch.addClass("glyphicon glyphicon-check");
             ch.bind(model, variableName, function (v) {
               var on = "glyphicon glyphicon-check";
@@ -1069,6 +1069,7 @@
                 ch.addClass(off);
               }
             });
+
             this.add(ch);
             return ch;
           }
