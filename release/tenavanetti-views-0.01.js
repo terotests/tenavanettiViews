@@ -401,6 +401,12 @@
                 }));
               }
             });
+            foot.button("btn btn-default").text("Virheviesti").on("click", function () {
+              o.pushTo("messages", "newMessage", _data({
+                success: false,
+                text: "Testaan virheviestiä"
+              }));
+            });
             return itemDiv;
           });
         });
