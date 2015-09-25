@@ -209,6 +209,27 @@
           editArea.input("form-control").bind(item, "heading");
           editArea.label().text(_t("Sisältö"));
           editArea.textarea("form-control").bind(item, "text").height(300);
+
+          editArea.button("btn btn-success").text("Tallenna muutokset").on("click", function () {
+            if (ajaxEndpoint) {
+
+              o.postJSON(ajaxEndpoint, {
+                cmd: "editNote",
+                data: item.toPlainData()
+              }, function (resObj) {
+                if (resObj.success) {
+                  if (resObj.text) {
+                    o.pushTo("messages", "newMessage", resObj.text);
+                  }
+                  o.popView();
+                } else {
+                  messages.text("Save failed");
+                }
+              }, function () {
+                messages.text("Sending the file failed");
+              });
+            }
+          });
         });
 
         return o;
@@ -239,6 +260,22 @@
         body.button("btn btn-primary").text("Tallenna").on("click", function () {
           o.popView();
         });
+
+        return o;
+      };
+
+      /**
+       * @param String msgText
+       */
+      _myTrait_.newMessage = function (msgText) {
+        var o = _e();
+
+        var msgDiv = o.div("alert alert-info");
+        msgDiv.text(msgText);
+
+        setTimeout(function () {
+          msgDiv.remove();
+        }, 4000);
 
         return o;
       };
@@ -760,6 +797,16 @@
         if (_handlers) {
           return _handlers[cmdName];
         }
+      };
+
+      /**
+       * @param float t
+       */
+      _myTrait_.editNote = function (t) {
+        return {
+          text: "Tallennus onnistui",
+          success: true
+        };
       };
 
       /**
