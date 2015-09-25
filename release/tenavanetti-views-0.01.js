@@ -413,20 +413,13 @@
 
         leftRow.ul("nav nav-pills").tree(gardenInfo.gardens, function (item, level) {
           var o = _e("li");
+          o.addClass("clickable");
           o.addClass("list-group-item");
           if (!item.get("selected")) {
             item.set("selected", false);
           }
           if (level > 1) {
-            //var inp = o.input({type:"checkbox"});
-            //inp.bind(item,"selected");
-
             o.tnCheckbox(item, "selected");
-
-            // glyphicon glyphicon-unchecked
-            // glyphicon glyphicon-check
-
-            // var inp = o.span("glyphicon glyphicon-check");
           }
           o.span().text(" ");
           var name = o.span("dragLabel").bind(item, "name");
@@ -1076,6 +1069,15 @@
         });
       };
 
+      /**
+       * @param float t
+       */
+      _myTrait_.createStyles = function (t) {
+        css().bind("clickable", {
+          cursor: "pointer"
+        });
+      };
+
       if (_myTrait_.__traitInit && !_myTrait_.hasOwnProperty("__traitInit")) _myTrait_.__traitInit = _myTrait_.__traitInit.slice();
       if (!_myTrait_.__traitInit) _myTrait_.__traitInit = [];
       _myTrait_.__traitInit.push(function (options) {
@@ -1119,6 +1121,7 @@
             });
           }
           this.createExtensions();
+          this.createStyles();
         }
       });
     })(this);
