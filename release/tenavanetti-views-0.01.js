@@ -378,7 +378,9 @@
         });
         var ilmModel = _data(id);
         item.then(function () {
+          o.label().text(_t("Viestin otsikko"));
           o.input("form-control").bind(item, "heading");
+          o.label().text(_t("Viestin sisältö"));
           o.textarea("form-control").bind(item, "text").height(300);
           o.button("btn btn-success").text("Lisätään uusi viesti").on("click", function () {
             if (ajaxEndpoint) {
