@@ -1168,6 +1168,11 @@
         css().bind(".clickable", {
           cursor: "pointer"
         });
+
+        css().bind(".messages", {
+          height: "50px",
+          overflow: "hidden"
+        });
       };
 
       if (_myTrait_.__traitInit && !_myTrait_.hasOwnProperty("__traitInit")) _myTrait_.__traitInit = _myTrait_.__traitInit.slice();
