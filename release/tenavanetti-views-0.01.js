@@ -215,6 +215,35 @@
       };
 
       /**
+       * @param String id
+       */
+      _myTrait_.muokkaaLiitetiedostoja = function (id) {
+
+        var model = _data(id);
+
+        var o = _e();
+        o.addClass("panel panel-default");
+
+        o.div("panel-heading").text(_t("Muokataan liitetiedostoja"));
+
+        var body = o.div("panel-body");
+        body.ul("list-group").mvc(model, function (file) {
+          var o = _e("li");
+          o.addClass("list-group-item");
+          o.h4().bind(file, "tiedosto");
+          o.label().text(_t("Tiedoston nimi"));
+          o.div().input("form-control").bind(file, "nimi");
+          return o;
+        });
+
+        body.button("btn btn-primary").text("Tallenna").on("click", function () {
+          o.popView();
+        });
+
+        return o;
+      };
+
+      /**
        * @param float t
        */
       _myTrait_.oletusYlanavi = function (t) {
@@ -260,7 +289,11 @@
 
         var o = _e().addClass("container");
 
-        o.text("Hello from testView");
+        o.button().text("pop test view").on("click", function () {
+          o.popView();
+        });
+
+        o.div().text("Hello from testView");
 
         return o;
       };
@@ -293,10 +326,16 @@
             o.p().bind(item, "text", true);
             var tools = o.div();
 
-            o.ul("list-group").mvc(item.files, function (file) {
+            var liitteet = o.div();
+            liitteet.ul("list-group").mvc(item.files, function (file) {
               var o = _e("li");
               o.addClass("list-group-item");
-              o.button("btn btn-primary").span("glyphicon glyphicon-paperclip");
+
+              var btn = o.button("btn btn-primary").on("click", function () {
+                liitteet.push(item.files, "muokkaaLiitetiedostoja");
+              });
+              btn.span("glyphicon glyphicon-paperclip");
+
               o.h4().bind(file, "tiedosto");
               o.div().bind(file, "nimi");
               return o;
