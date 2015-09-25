@@ -422,6 +422,11 @@
               type: "checkbox"
             });
             inp.bind(item, "selected");
+
+            // glyphicon glyphicon-unchecked
+            // glyphicon glyphicon-check
+
+            // var inp = o.span("glyphicon glyphicon-check");
           }
           o.span().text(" ");
           var name = o.span("dragLabel").bind(item, "name");
@@ -1043,6 +1048,32 @@
 
     (function (_myTrait_) {
       var ajaxEndpoint;
+
+      /**
+       * @param float t
+       */
+      _myTrait_.createExtensions = function (t) {
+
+        _e().extendAll({
+          tnCheckbox: function tnCheckbox(model, variableName) {
+            var ch = _e("checkbox");
+            ch.addClass("glyphicon glyphicon-check");
+            ch.bind(model, variableName, function (v) {
+              var on = "glyphicon glyphicon-check";
+              var off = "glyphicon glyphicon-unchecked";
+              if (v) {
+                this.removeClass(off);
+                this.addClass(on);
+              } else {
+                this.removeClass(on);
+                this.addClass(off);
+              }
+            });
+            this.add(ch);
+            return ch;
+          }
+        });
+      };
 
       if (_myTrait_.__traitInit && !_myTrait_.hasOwnProperty("__traitInit")) _myTrait_.__traitInit = _myTrait_.__traitInit.slice();
       if (!_myTrait_.__traitInit) _myTrait_.__traitInit = [];
