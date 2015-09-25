@@ -435,6 +435,7 @@
               bAll = !bAll;
             }
           });
+          o.touchclick();
           this.subTree(item.groups, o.ul());
           return o;
         });

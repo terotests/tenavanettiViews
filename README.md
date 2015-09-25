@@ -817,6 +817,7 @@ leftRow.ul("nav nav-pills").tree( gardenInfo.gardens, function(item, level) {
             bAll = !bAll;
         }
     });
+    o.touchclick();
     this.subTree(item.groups, o.ul() );
     return o;
 });
