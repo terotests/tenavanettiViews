@@ -573,21 +573,44 @@
 
         var readerWarning = o.div();
         var readerInfo = o.div();
-        readerInfo.mvc(readers, function (reader) {
-          var e = _e("span");
-          e.span("glyphicon glyphicon-user");
-          e.span().text(reader.name() + " (" + reader.gardenName() + ")");
-          return e;
+        /*
+        readerInfo.mvc(readers, function(reader) {
+        var e = _e("span");
+        e.span("glyphicon glyphicon-user");
+        e.span().text(reader.name()+" ("+reader.gardenName()+")");
+        return e;
         });
+        */
 
         var set_reader_status = function set_reader_status() {
           if (readers.length() == 0) {
             readerWarning.clear();
+            readerInfo.clear();
             var ss = readerWarning.div("alert alert-warning");
             ss.span("glyphicon glyphicon-warning-sign");
             ss.span().text("Viestillä ei ole yhtään lukijoita!");
           } else {
             readerWarning.clear();
+            readerInfo.clear();
+            readerInfo.span("glyphicon glyphicon-user");
+            readerInfo.span().text("Viesti näkyy " + readers.length() + " lukijalle ");
+            var details = readerInfo.span();
+            var max = 2,
+                i = 0,
+                left = readers.length();
+            while (max--) {
+              var user = readers.at(i++);
+              left--;
+              if (user) {
+                if (i > 1) details.b().span().text(", ");
+                details.b().span().text(user.name() + " (" + user.gardenName() + ")");
+              } else {
+                break;
+              }
+            }
+            if (left > 0) {
+              details.span().text(" ja " + left + " muulle");
+            }
           }
         };
 
